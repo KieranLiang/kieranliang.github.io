@@ -30,9 +30,15 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist/public
-          force_orphan: true
+      - name: Copy to docs folder
+        run: |
+          rm -rf docs
+          cp -r dist/public docs
+
+      - name: Commit and push to main
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add docs -f
+          git commit -m "Deploy to docs folder" || echo "No changes to commit"
+          git push
