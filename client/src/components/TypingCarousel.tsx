@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 interface TypingCarouselProps {
   prefix: string;
   words: string[];
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
 }
 
 export default function TypingCarousel({ prefix, words, icon }: TypingCarouselProps) {

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-AI Product Manager portfolio website (AI产品经理个人网站) built with React, Express, and TypeScript. Features an Eastern Scholar's Studio aesthetic (「素笺」) with custom parchment/ink/indigo/gold color palette.
+AI Product Manager portfolio website (AI产品经理个人网站) built with React and TypeScript. Features an Eastern Scholar's Studio aesthetic (「素笺」) with custom parchment/ink/indigo/gold color palette. Deployed to GitHub Pages via GitHub Actions.
 
 ## Common Commands
 
@@ -12,11 +12,11 @@ AI Product Manager portfolio website (AI产品经理个人网站) built with Rea
 # Development - starts Vite dev server with hot reload
 pnpm dev
 
-# Production build - builds client and bundles server with esbuild
+# Production build - builds client with Vite
 pnpm build
 
-# Start production server - serves static files from dist/public
-pnpm start
+# Preview production build locally
+pnpm preview
 
 # Type check without emitting
 pnpm check
@@ -27,45 +27,36 @@ pnpm format
 
 ## Architecture
 
-### Monorepo Structure
+### Project Structure
 - `client/` - React SPA frontend
-- `server/` - Express.js production server
-- `shared/` - Shared constants/types between client and server
-- `patches/` - pnpm patches for dependencies
+  - `client/src/pages/` - Page components (Home, Blog, BlogPost, NotFound)
+  - `client/src/components/` - Custom components (Navbar, Footer, ScrollReveal, etc.)
+  - `client/src/components/ui/` - shadcn UI primitives (button, card, tooltip, etc.)
+  - `client/src/lib/` - Data and utilities (data.ts, posts.ts, utils.ts)
+  - `client/src/contexts/` - React contexts (ThemeContext)
+- `content/posts/` - Markdown blog posts (auto-loaded via Vite glob import)
 
 ### Path Aliases
 - `@/` → `./client/src/*`
-- `@shared/` → `./shared/*`
 
 ### Key Technologies
-- **Build**: Vite 7 with custom plugins, esbuild for server bundling
+- **Build**: Vite 7
 - **Frontend**: React 19, TypeScript 5.6
 - **Routing**: wouter (lightweight React router)
 - **Styling**: Tailwind CSS v4 with `@theme inline` CSS variables
-- **UI Components**: shadcn/ui with Radix UI primitives
+- **UI Components**: shadcn/ui (minimal set)
 - **Animation**: framer-motion
-- **Forms**: react-hook-form with zod validation
+- **Blog**: Markdown files parsed at build time via Vite glob import
 - **Icons**: lucide-react
-
-### Custom Vite Plugins
-The vite.config.ts includes custom plugins:
-- `vitePluginManusRuntime` - Manus integration
-- `vitePluginManusDebugCollector` - Browser console/network logging to `.manus-logs/`
 
 ### Design System (index.css)
 Custom Eastern aesthetic color palette:
-- `--color-parchment` - Warm off-white background (#F8F6F0)
-- `--color-ink` - Deep text color (#1C1C1E)
-- `--color-indigo` - Primary accent (#2D5A7B)
-- `--color-gold` - Secondary accent (#B8860B)
+- `--color-parchment` - Warm off-white background
+- `--color-ink` - Deep text color
+- `--color-indigo` - Primary accent
+- `--color-gold` - Secondary accent
 
 Fonts: LXGW WenKai (Chinese), DM Sans/Serif Display (English), Noto Sans SC
-
-### Environment Variables
-- `VITE_OAUTH_PORTAL_URL` - OAuth portal base URL
-- `VITE_APP_ID` - OAuth app identifier
-- `VITE_ANALYTICS_ENDPOINT` - Umami analytics endpoint
-- `VITE_ANALYTICS_WEBSITE_ID` - Umami website ID
 
 ### Routing
 Client-side routing via wouter in `client/src/App.tsx`:
@@ -74,16 +65,18 @@ Client-side routing via wouter in `client/src/App.tsx`:
 - `/blog/:slug` - Individual blog post
 - `/404` - Not found
 
-Server serves `index.html` for all routes (SPA fallback).
+### Deployment
+GitHub Pages via GitHub Actions artifact deployment. Workflow builds with Vite and uploads `dist/public` as a Pages artifact.
 
 ## File Conventions
 
-- Components use kebab-case filenames (e.g., `error-boundary.tsx`)
+- Components use PascalCase filenames (e.g., `ErrorBoundary.tsx`)
 - React hooks have `.ts` extension, components have `.tsx`
 - UI components in `client/src/components/ui/` are from shadcn
 - Custom components in `client/src/components/`
 - Page components in `client/src/pages/`
 - Data/constants in `client/src/lib/data.ts`
+- Blog posts in `content/posts/*.md` with YAML frontmatter
 
 ## Code Style
 
